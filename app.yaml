@@ -12,5 +12,9 @@ handlers:
 - url: /static
   static_dir: static
 
+- url: /.*
+  script: grb.app
+  secure: optional
+
 skip_files:
 - .*\.git*
