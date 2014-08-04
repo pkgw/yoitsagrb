@@ -24,6 +24,16 @@ class GRB (webapp2.RequestHandler):
     def get (self):
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
         key = keys[0]
+
+        emails = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'email\''))
+        email = emails[0]
+
+        if not self.request.path.startswith('/_ah/mail/' + email + '@'):
+            logging.warn ('Suspicious e-mail to ' + self.request.path)
+            return
+        
+        logging.info ('GRB Yo! sent.')
+
         form_fields = {
           "api_token": key.value,
         }
