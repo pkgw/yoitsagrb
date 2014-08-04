@@ -14,6 +14,12 @@ class SetKey (webapp2.RequestHandler):
         self.response.out.write('set key to : ' + key)
         ConfigRecord (name='api-key', value = key).put ()
 
+class SetEmail (webapp2.RequestHandler):
+    def get (self):
+        email = self.request.get ('email')
+        self.response.out.write('set email to : ' + email)
+        ConfigRecord (name='email', value = email).put ()
+
 class GRB (webapp2.RequestHandler):
     def get (self):
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
@@ -29,7 +35,8 @@ class GRB (webapp2.RequestHandler):
 
 handlers = [
     ('/GRB.txt', GRB),
-    ('/admin/setkey', SetKey)
+    ('/admin/setkey', SetKey),
+    ('/admin/setemail', SetEmail)
 ]
 
 app = webapp2.WSGIApplication (handlers)
