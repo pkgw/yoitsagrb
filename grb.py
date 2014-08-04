@@ -1,12 +1,14 @@
 # -*- python -*-
 
-import cgi, cookielib, datetime, logging, urllib, urllib2, webapp2
+import logging, urllib, urllib2, webapp2
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
+
 
 class ConfigRecord (db.Model):
     name = db.StringProperty (required=True)
     value = db.StringProperty (required=True)
+
 
 class SetKey (webapp2.RequestHandler):
     def get (self):
@@ -14,11 +16,13 @@ class SetKey (webapp2.RequestHandler):
         self.response.out.write('set key to : ' + key)
         ConfigRecord (name='api-key', value = key).put ()
 
+
 class SetEmail (webapp2.RequestHandler):
     def get (self):
         email = self.request.get ('email')
         self.response.out.write('set email to : ' + email)
         ConfigRecord (name='email', value = email).put ()
+
 
 class GRB (webapp2.RequestHandler):
     def post (self):
@@ -31,7 +35,7 @@ class GRB (webapp2.RequestHandler):
         if not self.request.path.startswith('/_ah/mail/' + email.value + '@'):
             logging.warn ('Suspicious e-mail to ' + self.request.path)
             return
-        
+
         logging.info ('GRB Yo! sent.')
 
         form_fields = {
