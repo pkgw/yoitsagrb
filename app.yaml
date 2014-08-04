@@ -16,7 +16,7 @@ handlers:
   script: grb.app
   login: admin
 
-- url: /.*
+- url: /_ah/mail/.*
   script: grb.app
   secure: optional
 
