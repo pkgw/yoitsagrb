@@ -21,14 +21,14 @@ class SetEmail (webapp2.RequestHandler):
         ConfigRecord (name='email', value = email).put ()
 
 class GRB (webapp2.RequestHandler):
-    def get (self):
+    def post (self):
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
         key = keys[0]
 
         emails = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'email\''))
         email = emails[0]
 
-        if not self.request.path.startswith('/_ah/mail/' + email + '@'):
+        if not self.request.path.startswith('/_ah/mail/' + email.value + '@'):
             logging.warn ('Suspicious e-mail to ' + self.request.path)
             return
         
@@ -44,7 +44,7 @@ class GRB (webapp2.RequestHandler):
             headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
 handlers = [
-    ('/GRB.txt', GRB),
+    ('/_ah/mail/.+', GRB),
     ('/admin/setkey', SetKey),
     ('/admin/setemail', SetEmail)
 ]
