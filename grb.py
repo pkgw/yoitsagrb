@@ -3,6 +3,7 @@
 import logging, urllib, urllib2, webapp2
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
+from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 
 class ConfigRecord (db.Model):
@@ -24,8 +25,12 @@ class SetEmail (webapp2.RequestHandler):
         ConfigRecord (name='email', value = email).put ()
 
 
-class GRB (webapp2.RequestHandler):
-    def post (self):
+class GRB (InboundMailHandler):
+    def receive (self, mail_message):
+        logging.info ("Received a message from: " + mail_message.sender)
+
+        logging.info ("Mail content: " + mail_message.original.as_string ())
+
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
         key = keys[0]
 
