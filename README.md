@@ -8,7 +8,7 @@ detect a new GRB every few days, give or take.
 This page has the source code that drives the web app. See [the main
 site][YOITSAGRB] for a non-programmer’s description.
 
-[YOITSAGRB]: https://github.com/pkgw/yoitsagrb/
+[YOITSAGRB]: http://pkgw.github.io/yoitsagrb/
 
 ## How does it work under the hood?
 
