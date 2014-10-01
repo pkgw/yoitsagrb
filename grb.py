@@ -1,4 +1,7 @@
 # -*- python -*-
+#
+# Copyright 2014 Philip Cowperthwaite and collaborators. Licensed under the
+# MIT License.
 
 import logging, urllib, urllib2, webapp2
 from google.appengine.ext import db
