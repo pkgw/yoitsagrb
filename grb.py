@@ -29,12 +29,13 @@ FERMI_DUR_THRESHOLD = 0.5 # seconds
 
 class GRB (InboundMailHandler):
     def receive (self, mail_message):
+        # The precise destination email address that we accept is a random
+        # string, so that random people can't just trigger GRB alerts. Ignore
+        # any emails that don't come to the right address.
+
         logging.info ('Received a message from: ' + mail_message.sender)
         mailtext = mail_message.original.as_string ()
         logging.info ('Mail content: ' + mailtext)
-
-        keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
-        key = keys[0]
 
         emails = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'email\''))
         email = emails[0]
@@ -63,11 +64,14 @@ class GRB (InboundMailHandler):
         # OK to go!
         logging.info ('Sending GRB Yo!')
 
+        keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
+        key = keys[0]
+
         form_fields = {
-          "api_token": key.value,
+          'api_token': key.value,
         }
         form_data = urllib.urlencode(form_fields)
-        result = urlfetch.fetch(url="http://api.justyo.co/yoall/",
+        result = urlfetch.fetch(url='http://api.justyo.co/yoall/',
             payload=form_data,
             method=urlfetch.POST,
             headers={'Content-Type': 'application/x-www-form-urlencoded'})
