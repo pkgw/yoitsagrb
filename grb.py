@@ -25,11 +25,13 @@ class SetEmail (webapp2.RequestHandler):
         ConfigRecord (name='email', value = email).put ()
 
 
+FERMI_DUR_THRESHOLD = 0.5 # seconds
+
 class GRB (InboundMailHandler):
     def receive (self, mail_message):
-        logging.info ("Received a message from: " + mail_message.sender)
-
-        logging.info ("Mail content: " + mail_message.original.as_string ())
+        logging.info ('Received a message from: ' + mail_message.sender)
+        mailtext = mail_message.original.as_string ()
+        logging.info ('Mail content: ' + mailtext)
 
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
         key = keys[0]
@@ -41,7 +43,25 @@ class GRB (InboundMailHandler):
             logging.warn ('Suspicious e-mail to ' + self.request.path)
             return
 
-        logging.info ('GRB Yo! sent.')
+        # Filter out low-significant Fermi alerts, since they're quite common.
+        reject_this_one = False
+
+        for line in mailtext.splitlines ():
+            if 'TRIGGER_DUR:' in line:
+                try:
+                    q = float (line.split ()[1])
+                except Exception as e:
+                    logging.warn ('failed to parse TRIGGER_DUR line: ' + str (e))
+                else:
+                    if q < FERMI_DUR_THRESHOLD:
+                        reject_this_one = True
+
+        if reject_this_one:
+            logging.info ('rejected this event due to low significance')
+            return
+
+        # OK to go!
+        logging.info ('Sending GRB Yo!')
 
         form_fields = {
           "api_token": key.value,
