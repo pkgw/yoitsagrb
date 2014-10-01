@@ -2,7 +2,8 @@
 
 YOITSAGRB is a web service that sends you a [Yo](http://www.justyo.co/)
 whenever a [gamma-ray burst](http://en.wikipedia.org/wiki/Gamma-ray_burst)
-occurs in the known universe.
+occurs in the known universe. With our current gamma-ray observatories, humans
+detect a new GRB every few days, give or take.
 
 ## How do I subscribe?
 
@@ -32,13 +33,20 @@ kit](http://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=11407) related to one of
 the brightest bursts ever seen. Finally, you can even [read a
 book](http://www.amazon.com/Gamma-Ray-Bursts-Princeton-Frontiers-Physics/dp/0691145571/)!
 
-## How does it work?
+## How does it work under the hood?
 
-See the source code linked above. There’s absolutely nothing fancy: we get
-GCN email alerts, and translate them into Yos.
+See the source code linked above, especially `grb.py`. There’s absolutely
+nothing fancy: we get [GCN](http://gcn.gsfc.nasa.gov/) email alerts, and
+translate them into Yos.
 
 ## Who’s responsible for this?
 
 [Philip
 Cowperthwaite](http://astronomy.fas.harvard.edu/people/philip-cowperthwaite)
 and [Peter K. G. Williams](http://newton.cx/~peter/).
+
+## Can I copy the code to start my own similar project?
+
+Most definitely. The source files are copyright Philip Cowperthwaite and
+collaborators, 2014, but they are all (including this one) licensed under the
+permissive, open-source [MIT License](http://opensource.org/licenses/MIT).
