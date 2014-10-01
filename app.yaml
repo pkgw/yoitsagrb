@@ -28,3 +28,4 @@ inbound_services:
 
 skip_files:
 - .*\.git*
+- README.md
