@@ -14,26 +14,25 @@ class ConfigRecord (db.Model):
     value = db.StringProperty (required=True)
 
 
-class SetKey (webapp2.RequestHandler):
+class SetConfig (webapp2.RequestHandler):
     """TODO: multiple calls to this will create multiple entires in the database,
     which leads to unpredictable results. Right now we fix this by logging in
     to the Developer Console web UI and cleaning things out, but this function
-    should really clear existing database keys.
+    should really clear existing records with the same name.
+
+    This function can only be called by administrators, so we don't
+    sanity-check the input or the output.
 
     """
     def get (self):
-        key = self.request.get ('key')
-        self.response.out.write ('set key to : ' + key)
-        ConfigRecord (name='api-key', value=key).put ()
+        from cgi import escape
 
+        name = self.request.get ('name')
+        value = self.request.get ('value')
 
-class SetEmail (webapp2.RequestHandler):
-    """TODO: see comment in SetKey handler."""
-
-    def get (self):
-        email = self.request.get ('email')
-        self.response.out.write ('set email to : ' + email)
-        ConfigRecord (name='email', value=email).put ()
+        self.response.out.write ('set "%s" to "%s"' %
+                                 (escape (name), escape (value)))
+        ConfigRecord (name=name, value=value).put ()
 
 
 def get_config (name):
@@ -107,8 +106,7 @@ class GRB (InboundMailHandler):
 
 handlers = [
     ('/_ah/mail/.+', GRB),
-    ('/admin/setkey', SetKey),
-    ('/admin/setemail', SetEmail),
+    ('/admin/setconfig', SetConfig),
     ('/admin/subcount', CountSubscribers),
 ]
 
