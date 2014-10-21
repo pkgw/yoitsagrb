@@ -15,13 +15,16 @@ class ConfigRecord (db.Model):
 
 
 class SetConfig (webapp2.RequestHandler):
-    """TODO: multiple calls to this will create multiple entires in the database,
-    which leads to unpredictable results. Right now we fix this by logging in
-    to the Developer Console web UI and cleaning things out, but this function
-    should really clear existing records with the same name.
+    """TODO: multiple calls to this handler will create multiple records in the
+    config database, which leads to unpredictable results. Right now we fix
+    this manually by logging in to the Developer Console web UI and cleaning
+    things out, but this function should really clear existing records with
+    the same name.
 
-    This function can only be called by administrators, so we don't
-    sanity-check the input or the output.
+    This handler can only be called by administrators, so we don't
+    sanity-check the input or the output. Also, it should really be a POST,
+    not GET, since it changes the server's state. For our simple uses, the
+    current implementation is good enough, though.
 
     """
     def get (self):
