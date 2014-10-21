@@ -33,13 +33,10 @@ class CountSubscribers (webapp2.RequestHandler):
         from cgi import escape
 
         keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
-        key = keys[0]
+        key = keys[0].value
 
-        form_data = urllib.urlencode ({'api_token': key.value})
-        result = urlfetch.fetch (url='http://api.justyo.co/subscribers_count/',
-                                 payload=form_data,
-                                 method=urlfetch.POST,
-                                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
+        url = 'https://api.justyo.co/subscribers_count?api_token=' + urllib.quote (key)
+        result = urlfetch.fetch (url=url, method=urlfetch.GET)
 
         self.response.out.write ('<!DOCTYPE html><html><head></head><body>')
         self.response.out.write ('<p>Response status code: %s</p>' % result.status_code)
