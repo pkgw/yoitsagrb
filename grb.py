@@ -38,10 +38,10 @@ class CountSubscribers (webapp2.RequestHandler):
         form_data = urllib.urlencode ({'api_token': key.value})
         result = urlfetch.fetch (url='http://api.justyo.co/subscribers_count/',
                                  payload=form_data,
-                                 method=urlfetch.GET,
+                                 method=urlfetch.POST,
                                  headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
-        self.response.out.write ('<html><head></head><body>')
+        self.response.out.write ('<!DOCTYPE html><html><head></head><body>')
         self.response.out.write ('<p>Response status code: %s</p>' % result.status_code)
         self.response.out.write ('<pre>')
         self.response.out.write (escape (result.content))
