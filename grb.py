@@ -28,6 +28,26 @@ class SetEmail (webapp2.RequestHandler):
         ConfigRecord (name='email', value = email).put ()
 
 
+class CountSubscribers (webapp2.RequestHandler):
+    def get (self):
+        from cgi import escape
+
+        keys = list (db.GqlQuery ('SELECT * FROM ConfigRecord where name = \'api-key\''))
+        key = keys[0]
+
+        form_data = urllib.urlencode ({'api_token': key.value})
+        result = urlfetch.fetch (url='http://api.justyo.co/subscribers_count/',
+                                 payload=form_data,
+                                 method=urlfetch.GET,
+                                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
+
+        self.response.out.write ('<html><head></head><body>')
+        self.response.out.write ('<p>Response status code: %s</p>' % result.status_code)
+        self.response.out.write ('<pre>')
+        self.response.out.write (escape (result.content))
+        self.response.out.write ('</pre></body></html>')
+
+
 FERMI_DUR_THRESHOLD = 0.5 # seconds
 
 class GRB (InboundMailHandler):
@@ -82,7 +102,8 @@ class GRB (InboundMailHandler):
 handlers = [
     ('/_ah/mail/.+', GRB),
     ('/admin/setkey', SetKey),
-    ('/admin/setemail', SetEmail)
+    ('/admin/setemail', SetEmail),
+    ('/admin/subcount', CountSubscribers),
 ]
 
 app = webapp2.WSGIApplication (handlers)
