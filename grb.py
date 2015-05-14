@@ -65,6 +65,9 @@ class CountSubscribers (webapp2.RequestHandler):
 
 
 FERMI_DUR_THRESHOLD = 0.5 # seconds
+ALLOWED_SENDERS = [
+    'vxw@capella2.gsfc.nasa.gov',
+]
 
 class GRB (InboundMailHandler):
     def receive (self, mail_message):
@@ -73,6 +76,14 @@ class GRB (InboundMailHandler):
         # any emails that don't come to the right address.
 
         logging.info ('Received a message from: ' + mail_message.sender)
+        for sender in ALLOWED_SENDERS:
+            if sender in mail_message.sender:
+                break
+        else:
+            # this branch is taken if nothing matches
+            logging.info ('discarding due to unrecognized sender address')
+            return
+
         mailtext = mail_message.original.as_string ()
         logging.info ('Mail content: ' + mailtext)
 
